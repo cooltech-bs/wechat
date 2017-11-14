@@ -58,6 +58,7 @@ func (ctx *Context) GetAccessTokenFromServer() (resAccessToken ResAccessToken, e
 	if err != nil {
 		return
 	}
+	fmt.Println("GetAccessTokenFromServer body:", string(body))
 	err = json.Unmarshal(body, &resAccessToken)
 	if err != nil {
 		return

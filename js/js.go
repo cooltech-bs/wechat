@@ -93,6 +93,7 @@ func (js *Js) getTicketFromServer() (ticket resTicket, err error) {
 	var response []byte
 	url := fmt.Sprintf(getTicketURL, accessToken)
 	response, err = util.HTTPGet(url)
+	fmt.Println("getTicketFromServer body:", string(response))
 	err = json.Unmarshal(response, &ticket)
 	if err != nil {
 		return
