@@ -6,7 +6,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/silenceper/wechat"
 	"github.com/silenceper/wechat/context"
 	"github.com/silenceper/wechat/util"
 )
@@ -107,15 +106,7 @@ func (js *Js) getTicketFromServer() (ticket resTicket, err error) {
 
 	jsAPITicketCacheKey := fmt.Sprintf("jsapi_ticket_%s", js.AppID)
 
-	expires := ticket.ExpiresIn - wechat.TokenOrTicketRefreshBufferPeriod
-	if !(wechat.MinimumCacheLife > 0 && wechat.MaximumCacheLife > 0 && wechat.MinimumCacheLife > wechat.MaximumCacheLife) {
-		if wechat.MinimumCacheLife > 0 && expires < wechat.MinimumCacheLife {
-			expires = wechat.MinimumCacheLife
-		}
-		if wechat.MaximumCacheLife > 0 && expires > wechat.MaximumCacheLife {
-			expire = wechat.MinimumCacheLife
-		}
-	}
+	expires := util.CalculateTTL(ticket.ExpiresIn)
 	err = js.Cache.Set(jsAPITicketCacheKey, ticket.Ticket, time.Duration(expires)*time.Second)
 	return
 }

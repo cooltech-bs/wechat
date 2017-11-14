@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/silenceper/wechat"
 	"github.com/silenceper/wechat/util"
 )
 
@@ -72,15 +71,7 @@ func (ctx *Context) GetAccessTokenFromServer() (resAccessToken ResAccessToken, e
 
 	accessTokenCacheKey := fmt.Sprintf("access_token_%s", ctx.AppID)
 
-	expires := resAccessToken.ExpiresIn - wechat.TokenOrTicketRefreshBufferPeriod
-	if !(wechat.MinimumCacheLife > 0 && wechat.MaximumCacheLife > 0 && wechat.MinimumCacheLife > wechat.MaximumCacheLife) {
-		if wechat.MinimumCacheLife > 0 && expires < wechat.MinimumCacheLife {
-			expires = wechat.MinimumCacheLife
-		}
-		if wechat.MaximumCacheLife > 0 && expires > wechat.MaximumCacheLife {
-			expire = wechat.MinimumCacheLife
-		}
-	}
+	expires := util.CalculateTTL(resAccessToken.ExpiresIn)
 	err = ctx.Cache.Set(accessTokenCacheKey, resAccessToken.AccessToken, time.Duration(expires)*time.Second)
 	return
 }

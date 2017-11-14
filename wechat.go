@@ -15,19 +15,6 @@ import (
 	"github.com/silenceper/wechat/user"
 )
 
-// TokenOrTicketRefreshBufferPeriod is the duration before token/ticket
-// actually expires that our cache is removed and server request is
-// able to be triggered.
-var TokenOrTicketRefreshBufferPeriod = 1500
-
-// {Min|Max}imumCacheLife - if set to a positive number, this number will
-// override the `expires' field returned by WeChat server and act as the
-// actual TTL of entries in our database.
-var (
-	MinimumCacheLife = 0
-	MaximumCacheLife = 0
-)
-
 // Wechat struct
 type Wechat struct {
 	Context *context.Context
