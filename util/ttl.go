@@ -1,5 +1,9 @@
 package util
 
+import (
+	"log"
+)
+
 // TokenOrTicketRefreshBufferPeriod is the duration before token/ticket
 // actually expires that our cache is removed and server request is
 // able to be triggered.
@@ -17,6 +21,7 @@ const absoluteLowerLimit = 15
 
 // CalculateTTL tailors the expire value from WeChat server to our configuration.
 func CalculateTTL(expires int) int {
+	log.Println("TTL from WeChat server:", expires)
 	expires = expires - TokenOrTicketRefreshBufferPeriod
 	if !(MinimumCacheLife > 0 && MaximumCacheLife > 0 && MinimumCacheLife > MaximumCacheLife) {
 		if MinimumCacheLife > 0 && expires < MinimumCacheLife {
@@ -29,5 +34,6 @@ func CalculateTTL(expires int) int {
 	if expires < absoluteLowerLimit {
 		expires = absoluteLowerLimit
 	}
+	log.Println("TTL after tailoring:", expires)
 	return expires
 }
