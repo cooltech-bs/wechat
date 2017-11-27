@@ -9,11 +9,24 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"time"
 )
+
+// HTTPGetTimeout sets the read timeout for HTTPGet function.
+var HTTPGetTimeout = 3 * time.Second
 
 //HTTPGet get 请求
 func HTTPGet(uri string) ([]byte, error) {
-	response, err := http.Get(uri)
+	var response *http.Response
+	var err error
+	if HTTPGetTimeout > 0 { // Honor the timeout config
+		cli := http.Client{
+			Timeout: HTTPGetTimeout,
+		}
+		response, err = cli.Get(uri)
+	} else { // Default behavior (never times out)
+		response, err = http.Get(uri)
+	}
 	if err != nil {
 		return nil, err
 	}
